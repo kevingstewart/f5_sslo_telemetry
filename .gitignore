@@ -12,3 +12,4 @@ pdf/*
 .Trash*
 docs/conf.py
 docs/index.rst
+info.txt
