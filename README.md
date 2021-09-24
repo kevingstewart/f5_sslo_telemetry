@@ -9,9 +9,13 @@ The bulk of SSLO's critical telemetry information passes through flow-summary an
 F5 Telemetry Streaming alone is generally insufficient here, as SSL Orchestrator's information isn't available as readily-accessible numerical metric data. And so the set of tools prescribed are limited to those that can collect Syslog traffic and aggregate into useful data. While there are many options to choose from, this project focuses on a key set of tool combinations (log collectors -> aggregators -> dashboards) as templates for any other tools you may need to use. The combinations presented here are:
 
 - **Loki :: Graphite :: Grafana** - Loki (along with Promtail) performs the collection and aggregation of Syslog-NG messages from the BIG-IP. Graphite (with Statsd and F5 Telemetry Streaming) collects pure system performance metric information. And Grafana presents all of this information in a highly customizable dashboard.
-&nbsp;
+
+|
+
 - **Logstash :: Elasticsearch :: Kibana** (ELK) - Logstash collects BIG-IP Syslog-NG messages for aggregation in Elasticsearch. Kibana presents this information in a highly customizable dashboard.
-&nbsp;
+
+|
+
 - **Splunk** - This all-in-one commercial tool performs all of the operations - log collection, aggregation and visibility.
 
 
