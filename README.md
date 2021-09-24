@@ -10,11 +10,11 @@ F5 Telemetry Streaming alone is generally insufficient here, as SSL Orchestrator
 
 - **Loki :: Graphite :: Grafana** - Loki (along with Promtail) performs the collection and aggregation of Syslog-NG messages from the BIG-IP. Graphite (with Statsd and F5 Telemetry Streaming) collects pure system performance metric information. And Grafana presents all of this information in a highly customizable dashboard.
 
- |
+  |
 
 - **Logstash :: Elasticsearch :: Kibana** (ELK) - Logstash collects BIG-IP Syslog-NG messages for aggregation in Elasticsearch. Kibana presents this information in a highly customizable dashboard.
 
- |
+  |
 
 - **Splunk** - This all-in-one commercial tool performs all of the operations - log collection, aggregation and visibility.
 
