@@ -7,3 +7,4 @@ Text
 Text
 
 
+<img src="../../images/grafana_telemetry_page_20210924a.png" width="300">
