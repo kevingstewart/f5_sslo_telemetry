@@ -1,0 +1,80 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://172.16.1.89:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: syslog10
+
+    syslog:
+      listen_address: 0.0.0.0:1514
+      idle_timeout: 60s
+      label_structured_data: yes
+      labels:
+        job: "syslog10"
+
+    relabel_configs:
+      - source_labels: ['__syslog_message_hostname']
+        target_label: host
+      - source_labels: ['__syslog_message_sd_F5_12276_Session_ID']
+        target_label: session_id
+      - source_labels: ['__syslog_message_sd_F5_12276_Virtual_Server']
+        target_label: topology_vip
+      - source_labels: ['__syslog_message_sd_F5_12276_IP_Proto']
+        target_label: protocol_l4
+      - source_labels: ['__syslog_message_sd_F5_12276_Client_address']
+        target_label: source_ip
+      - source_labels: ['__syslog_message_sd_F5_12276_Client_port']
+        target_label: source_port
+      - source_labels: ['__syslog_message_sd_F5_12276_Destination_address']
+        target_label: dest_ip
+      - source_labels: ['__syslog_message_sd_F5_12276_Destination_port']
+        target_label: dest_port
+      - source_labels: ['__syslog_message_sd_F5_12276_Client_cipher_version']
+        target_label: client_cipher_version
+      - source_labels: ['__syslog_message_sd_F5_12276_Client_cipher']
+        target_label: client_cipher_name
+      - source_labels: ['__syslog_message_sd_F5_12276_Server_cipher_version']
+        target_label: server_cipher_version
+      - source_labels: ['__syslog_message_sd_F5_12276_Server_cipher']
+        target_label: server_cipher_name
+      - source_labels: ['__syslog_message_sd_F5_12276_L7_protocol']
+        target_label: protocol_l7
+      - source_labels: ['__syslog_message_sd_F5_12276_Hostname']
+        target_label: remote_host
+      - source_labels: ['__syslog_message_sd_F5_12276_SSL_Action']
+        target_label: ssl_action
+      - source_labels: ['__syslog_message_sd_F5_12276_Age']
+        target_label: latency
+      - source_labels: ['__syslog_message_sd_F5_12276_Service_path']
+        target_label: service_path
+      - source_labels: ['__syslog_message_sd_F5_12276_Client_bytes_in']
+        target_label: client_bytes_in
+      - source_labels: ['__syslog_message_sd_F5_12276_Client_bytes_out']
+        target_label: client_bytes_out
+      - source_labels: ['__syslog_message_sd_F5_12276_Server_bytes_in']
+        target_label: server_bytes_in
+      - source_labels: ['__syslog_message_sd_F5_12276_Server_bytes_out']
+        target_label: server_bytes_out
+      - source_labels: ['__syslog_message_sd_F5_12276_Policy_Action']
+        target_label: policy_action
+
+    pipeline_stages:
+      - regex:
+          source: host
+          expression: '(?P<host_modified>.*)'
+      - template:
+          source: host_modified
+          template: '{{ Replace .Value "." "-" -1 }}'
+      - labels:
+          host_modified:
+
+      - regex:
+              expression: '(?P<connflow>[\d\.:]+:\d+\s->\s[\d\.:]+:\d+)'
+      - labels:
+          connflow:

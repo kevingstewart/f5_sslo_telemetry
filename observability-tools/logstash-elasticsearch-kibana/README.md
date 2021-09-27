@@ -1,5 +1,5 @@
 # SSL Orchestrator Telemetry Project
-## Tools: Logstash - Elasticsearch - Kibana
+## Tools: Logstash :: Elasticsearch :: Kibana
 
 Text
 
