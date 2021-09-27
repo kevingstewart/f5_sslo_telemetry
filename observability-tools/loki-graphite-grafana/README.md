@@ -10,6 +10,7 @@ Please refer to official Grafana documentation at: https://grafana.com/. Grafana
 All together, the following instructions define a minimum configuration for presenting multi-system SSL Orchestrator health and availability.
 
 Example:
+
 <img src="../../images/grafana_telemetry_page_20210924a.png" width="300">
 
 
