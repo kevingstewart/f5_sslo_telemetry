@@ -15,18 +15,18 @@ Example:
 
 
 ### Installation
-While not expressly required, the steps to building Loki, Promtail, Graphite, and Grafana in Docker containers is shown below. This is an easy way to get an observability system up and runninq quickly. The entire set of tools can also be created from a single docker-compose file (included here).
+While not expressly required, the steps to building Loki, Promtail, Graphite, and Grafana in Docker containers is shown below. This is an easy way to get an observability system up and runninq quickly. The entire set of tools can also be created from a single docker-compose file (included here). For this observability server, you'll minimally need a Linux platform with Docker installed (and optionally Docker-Compose).
 
 1. **Install Loki** (log aggregator)<br />
     ```
-    $ wget https://raw.githubusercontent.com/grafana/loki/v2.3.0/cmd/loki/loki-local-config.yaml -O loki-config.yaml
+    wget https://raw.githubusercontent.com/grafana/loki/v2.3.0/cmd/loki/loki-local-config.yaml -O loki-config.yaml
     docker run -d --name loki --restart unless-stopped -v $(pwd):/mnt/config -p 3100:3100 grafana/loki:2.3.0 -config.file=/mnt/config/loki-config.yaml
     ```
 
 2. **Install and configure Promtail** (log collector)<br />
-Copy the promtail-config.yaml file (in this repository folder) to the local directory. Edit the file to point the client's url (line 9) to the local IP so that Promtail can access Loki. Promtail will establish a remote Syslog service on TCP port 1514.
+Copy the config-promtail.yaml file (included here) to the local directory. Edit the file to point the client's url (line 9) to the local server IP so that Promtail can access Loki. Promtail will establish a remote Syslog listener on this IP, and TCP port 1514.
     ```
-    docker run -d --name promtail --restart unless-stopped -p 1514:1514 -v $(pwd):/mnt/config -v /var/log:/var/log grafana/promtail:2.3.0 -config.file=/mnt/config/promtail-config.yaml
+    docker run -d --name promtail --restart unless-stopped -p 1514:1514 -v $(pwd):/mnt/config -v /var/log:/var/log grafana/promtail:2.3.0 -config.file=/mnt/config/config-promtail.yaml
     ```
 
 1. **Install Graphite** (stats collector)<br />
@@ -39,22 +39,22 @@ Copy the promtail-config.yaml file (in this repository folder) to the local dire
     docker run -d --name grafana --restart unless-stopped -p 3000:3000 grafana/grafana
     ```
 
-    To install all of these services in a single command, ensure that Docker-Compose is running on the observability server, copy the **docker-compose.yaml** file to that server, and then execute:
+    **Alternatively** to install all of these services in a single command, ensure that Docker-Compose is running on the observability server, copy the **docker-compose.yaml** file to that server, and then execute:
     ```
     docker-compose up -d
     ```
 
-    Once all observability services are up, you can access the Grafana dashboard at **http://server-ip:3000**. Log into that server, navigate to Dashboards, and then Manage. Click the Import button, and then copy the contents of the included **config-grafana.json** file into the window. Click Import again to complete the process.
+    Once all observability services are up and running, you can access the Grafana dashboard at **http://server-ip:3000** (where "server-ip" is the IP address of this server). Log into Grafana, navigate to Dashboards, and then Manage. Click the Import button, and then copy the contents of the included **config-grafana.json** file into the window. Click Import again to complete the import process.
 
 
 3. **Install and configure F5 Telemetry Streaming** (stats publisher)<br />
-Use the included **f5-ts-install.sh** Bash script to remotely install the latest F5 Telemetry Streaming package. This will download the latest RPM from the Github repository, upload that to the BIG-IP, and then initiate package installation. Edit the script and update the "CREDS" field with the correct BIG-IP user:pass information. Then run the script, providing the IP of the BIG-IP as an argument. Example:
+Use the included **f5-ts-install.sh** Bash script to remotely install the latest F5 Telemetry Streaming package. This will download the latest RPM from the Github repository, upload the RPM to the BIG-IP, and then initiate package installation. Edit the script and update the "CREDS" field with the correct BIG-IP user:pass information. Then run the script, providing the IP of the BIG-IP as an argument. Example:
     ```
     chmod +x f5-ts-install.sh
     ./f5-ts-install.sh 172.16.1.83
     ```
 
-    Now edit the included **config-f5-ts.json** file and change the StatsdConsumer host entry to point to the IP of the server running Graphite/Statsd. Use the included **f5-ts-config.sh** Bash script to push this configuration to the BIG-IP. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information. Then run the script, providing the IP of the BIG-IP, and the path to the config file as arguments. Example:
+    Now edit the included **config-f5-ts.json** file and change the StatsdConsumer host entry to point to the IP of the observability server running Graphite/Statsd. Use the included **f5-ts-config.sh** Bash script to push this configuration to the BIG-IP. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information. Then run the script, providing the IP of the BIG-IP, and the path to the config file as arguments. Example:
     ```
     chmod +x f5-ts-config.sh
     ./f5-ts-config.sh 172.16.1.83 config-f5-ts.json
@@ -71,7 +71,7 @@ Loki aggregates logs collected from the Promtail syslog service. To get those lo
     tmsh create sys log-config filter filter-01260009 message-id 01260009 publisher loki-syslog-pub
     ```
 
-    **Alternately** you can use the included **f5-logpub-install.sh** Bash script to perform all of the above actions. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information, and edit the "SYSLOG" field to point to the IP and port of the server running the Promtail service. Then run the script, providing the IP of the BIG-IP as an argument. Example:
+    **Alternatively** you can use the included **f5-logpub-install.sh** Bash script to perform all of the above actions. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information, and edit the "SYSLOG" field to point to the IP and port of the server running the Promtail service. Then run the script, providing the IP of the BIG-IP as an argument. Example:
     ```
     chmod +x f5-logpub-install.sh
     ./f5-logpub-install.sh 172.16.1.83
