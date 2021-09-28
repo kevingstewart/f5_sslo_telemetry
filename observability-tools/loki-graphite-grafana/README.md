@@ -71,7 +71,7 @@ Loki aggregates logs collected from the Promtail syslog service. To get those lo
     tmsh create sys log-config filter filter-01260009 message-id 01260009 publisher loki-syslog-pub
     ```
 
-    Alternately you can use the included **f5-logpub-install.sh** Bash script to perform all of the above actions. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information, and edit the "SYSLOG" field to point to the IP and port of the server running the Promtail service. Then run the script, providing the IP of the BIG-IP as an argument. Example:
+    **Alternately** you can use the included **f5-logpub-install.sh** Bash script to perform all of the above actions. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information, and edit the "SYSLOG" field to point to the IP and port of the server running the Promtail service. Then run the script, providing the IP of the BIG-IP as an argument. Example:
     ```
     chmod +x f5-logpub-install.sh
     ./f5-logpub-install.sh 172.16.1.83
