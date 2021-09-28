@@ -1,0 +1,41 @@
+{
+    "class": "Telemetry",
+    "Endpoints_Custom": {
+        "class": "Telemetry_Endpoints",
+        "items": {
+            "systemHostname": {
+                "name": "system",
+                "path": "/mgmt/tm/sys/global-settings?$select=hostname"
+            },
+            "systemPerf": {
+                "name": "systemPerf",
+                "path": "/mgmt/tm/sys/performance/all-stats?options=detail"
+            }
+        }
+    },
+    "My_System": {
+        "class": "Telemetry_System",
+        "allowSelfSignedCert": true,
+        "systemPoller": [
+            "My_Push_Poller",
+            {
+                "interval": 60
+            }
+        ],
+        "trace": true
+    },
+    "My_Push_Poller": {
+        "class": "Telemetry_System_Poller",
+        "interval": 60,
+        "endpointList": "Endpoints_Custom",
+        "trace": true
+    },
+    "StatsdConsumer": {
+        "class": "Telemetry_Consumer",
+        "type": "Statsd",
+        "host": "172.16.1.89",
+        "protocol": "udp",
+        "port": 8125,
+        "trace": true
+    }
+}
