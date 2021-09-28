@@ -39,7 +39,7 @@ Copy the config-promtail.yaml file (included here) to the local directory on the
     docker run -d --name grafana --restart unless-stopped -p 3000:3000 grafana/grafana
     ```
 
-    **Alternatively** to install all of these services in a single command, ensure that Docker-Compose is running on the observability server, copy the **docker-compose.yaml** file to that server, edit the config-promtail.yaml file, and then execute:
+    **Alternatively** to install all of these services in a single command, ensure that Docker-Compose is running on the observability server, copy the **docker-compose.yaml** file to that server, edit the **config-promtail.yaml** file, and then execute:
     ```
     docker-compose up -d
     ```
