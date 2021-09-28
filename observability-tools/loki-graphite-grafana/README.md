@@ -23,19 +23,18 @@ While not expressly required, the steps to building Loki, Promtail, Graphite, an
     docker run -d --name loki --restart unless-stopped -v $(pwd):/mnt/config -p 3100:3100 grafana/loki:2.3.0 -config.file=/mnt/config/loki-config.yaml
     ```
 
-2. **Install and configure Promtail** (log collector)
-&nbsp;
+2. **Install and configure Promtail** (log collector)<br />
 Copy the promtail-config.yaml file (in this repository folder) to the local directory. Edit the file to point the client's url (line 9) to the local IP so that Promtail can access Loki. Promtail will establish a remote Syslog service on TCP port 1514.
     ```
     docker run -d --name promtail --restart unless-stopped -p 1514:1514 -v $(pwd):/mnt/config -v /var/log:/var/log grafana/promtail:2.3.0 -config.file=/mnt/config/promtail-config.yaml
     ```
 
-3. **Install Graphite** (stats collector)
+1. **Install Graphite** (stats collector)
     ```
     docker run -d --name graphite --restart unless-stopped -p 88:80 -p 2003-2004:2003-2004 -p 2023-2024:2023-2024 -p 8125:8125/udp -p 8126:8126 graphiteapp/graphite-statsd
     ```
 
-4. **Install and configure Grafana** (dashboard)
+2. **Install and configure Grafana** (dashboard)
     ```
     docker run -d --name grafana --restart unless-stopped -p 3000:3000 grafana/grafana
     ```
@@ -49,7 +48,7 @@ Copy the promtail-config.yaml file (in this repository folder) to the local dire
     Once all observability services are up, you can access the Grafana dashboard at **http://server-ip:3000**. Log into that server, navigate to Dashboards, and then Manage. Click the Import button, and then copy the contents of the included **config-grafana.json** file into the window. Click Import again to complete the process.
 
 
-5. **Install and configure F5 Telemetry Streaming** (stats publisher)
+3. **Install and configure F5 Telemetry Streaming** (stats publisher)
 Use the included **f5-ts-install.sh** Bash script to remotely install the latest F5 Telemetry Streaming package. This will download the latest RPM from the Github repository, upload that to the BIG-IP, and then initiate package installation. Edit the script and update the "CREDS" field with the correct BIG-IP user:pass information. Then run the script, providing the IP of the BIG-IP as an argument. Example:
     ```
     chmod +x f5-ts-install.sh
