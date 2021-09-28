@@ -24,7 +24,7 @@ While not expressly required, the steps to building Loki, Promtail, Graphite, an
     ```
 
 2. **Install and configure Promtail** (log collector)<br />
-Copy the config-promtail.yaml file (included here) to the local directory. Edit the file to point the client's url (line 9) to the local server IP so that Promtail can access Loki. Promtail will establish a remote Syslog listener on this IP, and TCP port 1514.
+Copy the config-promtail.yaml file (included here) to the local directory on the observability server. Edit the file to point the client's url (line 9) to the local server IP so that Promtail can access Loki. Promtail will establish a remote Syslog listener on this IP, and TCP port 1514.
     ```
     docker run -d --name promtail --restart unless-stopped -p 1514:1514 -v $(pwd):/mnt/config -v /var/log:/var/log grafana/promtail:2.3.0 -config.file=/mnt/config/config-promtail.yaml
     ```
