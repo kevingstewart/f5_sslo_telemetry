@@ -85,5 +85,5 @@ Loki aggregates logs collected from the Promtail syslog service. To get those lo
     tmsh modify apm log-setting sslo_demoxp3b.app/sslo_demoxp3b-log-setting access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
     ```
 
-7. **Generate SSL Orchestrator Traffic**
+7. **Generate SSL Orchestrator Traffic**<br />
 The last step is to generate traffic and observe summary log and metric information pouring into the Grafana dashboard.
