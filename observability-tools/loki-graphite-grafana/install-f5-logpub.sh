@@ -3,6 +3,7 @@
 CREDS='admin:admin'
 SYSLOG='OBSERVABILITY-SERVER-IP-HERE:1514'
 BIGIP=$1
+POLICY=$2
 
 
 ## Create remote syslog pool
@@ -24,3 +25,7 @@ curl -sku ${CREDS} -H "Content-Type: application/json" "https://${BIGIP}/mgmt/tm
 ## Create SSL error log filter
 DATA="{\"name\":\"filter-01260009\",\"message-id\":\"01260009\",\"publisher\":\"loki-syslog-pub\"}"
 curl -sku ${CREDS} -H "Content-Type: application/json" "https://${BIGIP}/mgmt/tm/sys/log-config/filter" --data ${DATA}
+
+## Attach the log publisher to the SSLO policy
+DATA="{\"name\":\"sslo_${POLICY}.app/sslo_${POLICY}-log-setting\",\"access\":[{\"name\":\"general-log\",\"logLevel\":{\"sslOrchestrator\":\"info\"},\"publisher\":\"loki-syslog-pub\",\"type\":\"ssl-orchestrator\"}]}"
+curl -sku 'admin:admin' -H "Content-Type: application/json" -X PATCH "https://172.16.1.77/mgmt/tm/apm/log-setting/sslo_${POLICY}.app~sslo_${POLICY}-log-setting" --data ${DATA}

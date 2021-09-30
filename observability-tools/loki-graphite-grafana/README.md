@@ -71,12 +71,6 @@ Loki aggregates logs collected from the Promtail syslog service. To get those lo
     tmsh create sys log-config filter filter-01260009 message-id 01260009 publisher loki-syslog-pub
     ```
 
-    **Alternatively** you can use the included **install-f5-logpub.sh** Bash script to perform all of the above actions. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information, and edit the "SYSLOG" field to point to the IP and port of the server running the Promtail service. Then run the script, providing the IP of the BIG-IP as an argument. Example:
-    ```
-    chmod +x install-f5-logpub.sh
-    ./install-f5-logpub.sh 172.16.1.83
-    ```
-
     The log publisher must now be attached to an existing SSL Orchestrator security policy. Edit the below to point to the correct named object.
     ```
     tmsh modify apm log-setting <profile> access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
@@ -84,6 +78,15 @@ Loki aggregates logs collected from the Promtail syslog service. To get those lo
     example:
     tmsh modify apm log-setting sslo_demoxp3b.app/sslo_demoxp3b-log-setting access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
     ```
+
+    **Alternatively** you can use the included **install-f5-logpub.sh** Bash script to perform all of the above actions. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information, and edit the "SYSLOG" field to point to the IP and port of the server running the Promtail service. Then run the script, providing the IP of the BIG-IP and SSLO topology name as arguments. Example:
+    ```
+    chmod +x install-f5-logpub.sh
+    ./install-f5-logpub.sh 172.16.1.83 demotopology
+    ```
+
+    ***Note***: You'll need to run the **install-f5-logpub** script again for each new topology created to attach the log publisher to the SSLO security policy. 
+    <br />
 
 7. **Generate SSL Orchestrator Traffic**<br />
 The last step is to generate traffic and observe summary log and metric information pouring into the Grafana dashboard.
