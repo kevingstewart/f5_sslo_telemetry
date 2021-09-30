@@ -33,7 +33,7 @@
     "StatsdConsumer": {
         "class": "Telemetry_Consumer",
         "type": "Statsd",
-        "host": "172.16.1.89",
+        "host": "OBSERVABILITY-SERVER-IP-HERE",
         "protocol": "udp",
         "port": 8125,
         "trace": true

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CREDS='admin:admin'
-SYSLOG='172.16.1.89:1514'
+SYSLOG='OBSERVABILITY-SERVER-IP-HERE:1514'
 BIGIP=$1
 
 

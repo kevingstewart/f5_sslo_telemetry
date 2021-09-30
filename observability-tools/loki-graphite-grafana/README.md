@@ -48,16 +48,16 @@ Copy the config-promtail.yaml file (included here) to the local directory on the
 
 
 3. **Install and configure F5 Telemetry Streaming** (stats publisher)<br />
-Use the included **f5-ts-install.sh** Bash script to remotely install the latest F5 Telemetry Streaming package. This will download the latest RPM from the Github repository, upload the RPM to the BIG-IP, and then initiate package installation. Edit the script and update the "CREDS" field with the correct BIG-IP user:pass information. Then run the script, providing the IP of the BIG-IP as an argument. Example:
+Use the included **install-f5-ts.sh** Bash script to remotely install the latest F5 Telemetry Streaming package. This will download the latest RPM from the Github repository, upload the RPM to the BIG-IP, and then initiate package installation. Edit the script and update the "CREDS" field with the correct BIG-IP user:pass information. Then run the script, providing the IP of the BIG-IP as an argument. Example:
     ```
-    chmod +x f5-ts-install.sh
-    ./f5-ts-install.sh 172.16.1.83
+    chmod +x install-f5-ts.sh
+    ./install-f5-ts.sh 172.16.1.83
     ```
 
-    Now edit the included **config-f5-ts.json** file and change the StatsdConsumer host entry to point to the IP of the observability server running Graphite/Statsd. Use the included **f5-ts-config.sh** Bash script to push this configuration to the BIG-IP. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information. Then run the script, providing the IP of the BIG-IP, and the path to the config file as arguments. Example:
+    Now edit the included **config-f5-ts.json** file and change the StatsdConsumer host entry to point to the IP of the observability server running Graphite/Statsd. Use the included **install-ts-config.sh** Bash script to push this configuration to the BIG-IP. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information. Then run the script, providing the IP of the BIG-IP, and the path to the config file as arguments. Example:
     ```
-    chmod +x f5-ts-config.sh
-    ./f5-ts-config.sh 172.16.1.83 config-f5-ts.json
+    chmod +x install-ts-config.sh
+    ./install-ts-config.sh 172.16.1.83 config-f5-ts.json
     ```
 
 
@@ -71,10 +71,10 @@ Loki aggregates logs collected from the Promtail syslog service. To get those lo
     tmsh create sys log-config filter filter-01260009 message-id 01260009 publisher loki-syslog-pub
     ```
 
-    **Alternatively** you can use the included **f5-logpub-install.sh** Bash script to perform all of the above actions. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information, and edit the "SYSLOG" field to point to the IP and port of the server running the Promtail service. Then run the script, providing the IP of the BIG-IP as an argument. Example:
+    **Alternatively** you can use the included **install-f5-logpub.sh** Bash script to perform all of the above actions. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information, and edit the "SYSLOG" field to point to the IP and port of the server running the Promtail service. Then run the script, providing the IP of the BIG-IP as an argument. Example:
     ```
-    chmod +x f5-logpub-install.sh
-    ./f5-logpub-install.sh 172.16.1.83
+    chmod +x install-f5-logpub.sh
+    ./install-f5-logpub.sh 172.16.1.83
     ```
 
     The log publisher must now be attached to an existing SSL Orchestrator security policy. Edit the below to point to the correct named object.
