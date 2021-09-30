@@ -11,11 +11,14 @@ All together, the following instructions define a minimum configuration for pres
 
 Example:
 
-<img src="../../images/grafana_telemetry_page_20210924a.png" width="300">
+<img src="../../images/loki-graphite-grafana-sample.png" width="300">
 
 
 ### Installation
-While not expressly required, the steps to building Loki, Promtail, Graphite, and Grafana in Docker containers is shown below. This is an easy way to get an observability system up and runninq quickly. The entire set of tools can also be created from a single docker-compose file (included here). For this observability server, you'll minimally need a Linux platform with Docker installed (and optionally Docker-Compose).
+While not expressly required, the steps to building Loki, Promtail, Graphite, and Grafana in Docker containers is shown below. This is an easy way to get an observability system up and runninq quickly. The entire set of tools can also be created from a single docker-compose file (included here). For this observability server, you'll minimally need a Linux platform with Docker installed (and optionally Docker-Compose). 
+<img src="../../images/loki-graphite-grafana-layout.png" width="500">
+Naturally in a production system these components can be spread across multiple machines, however the details of that architecture are beyond the scope of this project. Please consult official product documentation as required. The below is for demonstration purposes only and relies on a single *observability* server to provide all log/stat collection, log aggregation, and dashboard tools - running in Docker containers.
+
 
 1. **Install Loki** (log aggregator)<br />
     ```
@@ -39,7 +42,7 @@ Copy the config-promtail.yaml file (included here) to the local directory on the
     docker run -d --name grafana --restart unless-stopped -p 3000:3000 grafana/grafana
     ```
 
-    **Alternatively** to install all of these services in a single command, ensure that Docker-Compose is running on the observability server, copy the **docker-compose.yaml** file to that server, edit the **config-promtail.yaml** file, and then execute:
+    **Alternatively** to install all of these services in a single command, ensure that Docker-Compose is running on the observability server, copy the **docker-compose.yaml** file to that server, edit the **config-promtail.yaml** file as described above, and then execute:
     ```
     docker-compose up -d
     ```
