@@ -95,4 +95,5 @@ Loki aggregates logs collected from the Promtail syslog service. To get those lo
 The last step is to generate traffic and observe summary log and metric information pouring into the Grafana dashboard.
 
 8. **Exploration**<br />
-One of the most useful functions of this Loki/Grafana integration is the powerful way in which the logs can be explored. This is especially powerful in troubleshooting user connectivity issues. Please review the sample dashboard above. While the bulk of the page is dedicated to aggregated stats/metrics, the bottom panel includes a log viewer. 
+One of the most useful functions of this Loki/Grafana integration is the powerful way in which the logs can be explored. This is especially powerful in troubleshooting user connectivity issues. Please review the sample dashboard above. While the bulk of the page is dedicated to aggregated stats/metrics, the bottom panel includes a log viewer. Click on the "Summary Log" title and click **Explore** from the fly-out menu.
+<img src="../../images/loki-graphite-grafana-sample-1.png" width="700"><br />
