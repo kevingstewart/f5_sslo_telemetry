@@ -3,38 +3,38 @@ services:
   loki:
     container_name: loki
     restart: unless-stopped
-    image: 'grafana/loki:2.3.0'
+    image: grafana/loki:2.3.0
     volumes:
-      - '$(pwd):/mnt/config'
+      - ./:/mnt/config
     ports:
-      - '3100:3100'
-    command: '-config.file=/mnt/config/loki-config.yaml'
+      - 3100:3100
+    command: -config.file=/mnt/config/loki-config.yaml
 
   promtail:
     container_name: promtail
     restart: unless-stopped
-    image: 'grafana/promtail:2.3.0'
+    image: grafana/promtail:2.3.0
     volumes:
-      - '$(pwd):/mnt/config'
-      - '/var/log:/var/log'
+      - ./:/mnt/config
+      - /var/log:/var/log
     ports:
-      - '1514:1514'
-    command: '-config.file=/mnt/config/promtail-config.yaml'
+      - 1514:1514
+    command: -config.file=/mnt/config/promtail-config.yaml
 
   graphite:
     container_name: graphite
     restart: unless-stopped
     image: graphiteapp/graphite-statsd
     ports:
-      - '88:80'
-      - '2003-2004:2003-2004'
-      - '2023-2024:2023-2024'
-      - '8125:8125/udp'
-      - '8126:8126'
+      - 88:80
+      - 2003-2004:2003-2004
+      - 2023-2024:2023-2024
+      - 8125:8125/udp
+      - 8126:8126
 
   grafana:
     container_name: grafana
     restart: unless-stopped
     image: grafana/grafana
     ports:
-        - '3000:3000'
+        - 3000:3000

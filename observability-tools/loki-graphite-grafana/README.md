@@ -44,6 +44,7 @@ Copy the config-promtail.yaml file (included here) to the local directory on the
 
     **Alternatively** to install all of these services in a single command, ensure that Docker-Compose is running on the observability server, copy the **docker-compose.yaml** file to that server, edit the **config-promtail.yaml** file as described above, and then execute:
     ```
+    wget https://raw.githubusercontent.com/grafana/loki/v2.3.0/cmd/loki/loki-local-config.yaml -O loki-config.yaml
     docker-compose up -d
     ```
 
