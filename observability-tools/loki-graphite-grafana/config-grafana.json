@@ -26,7 +26,7 @@
     "links": [],
     "panels": [
       {
-        "datasource": null,
+        "datasource": "Loki",
         "fieldConfig": {
           "defaults": {
             "color": {
@@ -304,7 +304,7 @@
         "type": "timeseries"
       },
       {
-        "datasource": null,
+        "datasource": "Loki",
         "fieldConfig": {
           "defaults": {
             "color": {
@@ -385,7 +385,7 @@
         "type": "timeseries"
       },
       {
-        "datasource": null,
+        "datasource": "Loki",
         "fieldConfig": {
           "defaults": {
             "color": {
@@ -444,7 +444,7 @@
             "id": "organize",
             "options": {
               "excludeByName": {
-                "Value": false,
+                "Value": true,
                 "ssl_action": false
               },
               "indexByName": {},
@@ -458,7 +458,7 @@
         "type": "piechart"
       },
       {
-        "datasource": null,
+        "datasource": "Loki",
         "fieldConfig": {
           "defaults": {
             "color": {
@@ -527,7 +527,7 @@
         "type": "piechart"
       },
       {
-        "datasource": null,
+        "datasource": "Loki",
         "fieldConfig": {
           "defaults": {
             "color": {
@@ -585,11 +585,13 @@
           {
             "id": "organize",
             "options": {
-              "excludeByName": {},
+              "excludeByName": {
+                "Value": true
+              },
               "indexByName": {},
               "renameByName": {
                 "NA": "",
-                "Value": "Bypass"
+                "Value": ""
               }
             }
           }
@@ -597,7 +599,7 @@
         "type": "piechart"
       },
       {
-        "datasource": null,
+        "datasource": "Loki",
         "fieldConfig": {
           "defaults": {
             "color": {
@@ -666,7 +668,7 @@
         "type": "piechart"
       },
       {
-        "datasource": null,
+        "datasource": "Loki",
         "fieldConfig": {
           "defaults": {
             "color": {
@@ -780,7 +782,7 @@
         "type": "table"
       },
       {
-        "datasource": null,
+        "datasource": "Loki",
         "fieldConfig": {
           "defaults": {
             "color": {
@@ -915,7 +917,7 @@
         "type": "table"
       },
       {
-        "datasource": null,
+        "datasource": "Loki",
         "fieldConfig": {
           "defaults": {
             "color": {
@@ -1034,7 +1036,7 @@
         "type": "table"
       },
       {
-        "datasource": null,
+        "datasource": "Loki",
         "fieldConfig": {
           "defaults": {
             "color": {
@@ -1171,7 +1173,7 @@
         "type": "table"
       },
       {
-        "datasource": null,
+        "datasource": "Loki",
         "gridPos": {
           "h": 14,
           "w": 24,
