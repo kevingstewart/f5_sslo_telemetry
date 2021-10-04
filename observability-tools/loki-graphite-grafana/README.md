@@ -22,6 +22,8 @@ Naturally in a production system these components can be spread across multiple 
 1. **Create an observability server**<br />
 For the set of Docker-based services described below, any generic Linux distro will suffice as long as Docker and Docker-Compose can be installed. As described, this server will run all of the observability services (ie. Loki, Promtail, Graphite, and Grafana), though it is perfectly reasonable to run these as dedicated (non-containerized) services on dedicated systems.
 
+    ***Note**: As the BIG-IP will be pushing logs through a high-speed log publisher, the observability services should be accessible to the BIG-IP via data plane interface.*
+
 2. **Clone this Github repository**<br />
 Clone this repository to your observability server.
     ```
@@ -32,7 +34,7 @@ Clone this repository to your observability server.
     ```
 
 3. **Edit the config-promtail.yaml file**<br />
-Edit the file to point the client's url (line 9) to the local server IP so that Promtail can access Loki. Promtail will establish a remote Syslog listener on this IP, and TCP port 1514.
+Edit the file to point the client's url (line 9) to the local server IP so that Promtail can access Loki. Promtail will establish a remote Syslog listener on this IP, and TCP port 1514. Ensure that this IP address will be accessible to the BIG-IP over a data plane interface.
 
 4. **Install the services via Docker-Compose**<br />
 The compose file is configured to read the Loki/Promtail configurations from the current directory. To start all of the services:
@@ -56,29 +58,29 @@ The compose file is configured to read the Loki/Promtail configurations from the
             docker run -d --name grafana --restart unless-stopped -p 3000:3000 grafana/grafana
 
 1. **Install and configure F5 Telemetry Streaming** (stats publisher)<br />
-Use the included **install-f5-ts.sh** Bash script to remotely install the latest F5 Telemetry Streaming package. This will download the latest RPM from the Github repository, upload the RPM to the BIG-IP, and then initiate package installation. Edit the script and update the "CREDS" field with the correct BIG-IP user:pass information. Then run the script, providing the IP of the BIG-IP as an argument. Example:
+Use the included **install-f5-ts.sh** Bash script to remotely install the latest F5 Telemetry Streaming package. This will download the latest RPM from the Github repository, upload the RPM to the BIG-IP, and then initiate package installation. Run the script, providing the BIG-IP credentials and IP of the BIG-IP as arguments. Example:
     ```
     chmod +x install-f5-ts.sh
-    ./install-f5-ts.sh 172.16.1.83
+    ./install-f5-ts.sh 'admin:admin' 10.1.1.4
     ```
 
-    Now edit the included **config-f5-ts.json** file and change the StatsdConsumer host entry to point to the IP of the observability server running Graphite/Statsd. Use the included **install-ts-config.sh** Bash script to push this configuration to the BIG-IP. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information. Then run the script, providing the IP of the BIG-IP, and the path to the config file as arguments. Example:
+    Use the included **install-ts-config.sh** Bash script to push the required Telemetry Streaming configuration to the BIG-IP. Run the script, providing the BIG-IP credentials, IP of the BIG-IP, and the IP of the observability server as arguments. Example:
     ```
     chmod +x install-ts-config.sh
-    ./install-ts-config.sh 172.16.1.83 config-f5-ts.json
+    ./install-ts-config.sh 'admin:admin' 10.1.1.4 10.1.10.30
     ```
 
 6. **Install and configure an F5 log publisher** (log publisher)<br />
-Loki aggregates logs collected from the Promtail syslog service. To get those logs to Promtail, the BIG-IP must be configured with a log publisher that attaches to the SSL Orchestrator security policy. Use the included **install-f5-logpub.sh** script to create all of the requires logging objects on the target BIG-IP. Edit the Bash script to update the "CREDS" field with the correct BIG-IP user:pass information, and edit the "SYSLOG" field to point to the IP and port of the server running the Promtail service. Then run the script, providing the IP of the BIG-IP and SSLO topology name as arguments. Example:
+Loki aggregates logs collected from the Promtail syslog service. To get those logs to Promtail, the BIG-IP must be configured with a log publisher that attaches to the SSL Orchestrator security policy. Use the included **install-f5-logpub.sh** script to create all of the requires logging objects on the target BIG-IP. Run the script, providing the BIG-IP credentials, IP of the BIG-IP, SSLO topology (short) name, and observability server's Syslog listener IP:port as arguments. Example:
     ```
     chmod +x install-f5-logpub.sh
-    ./install-f5-logpub.sh 172.16.1.83 demotopology
+    ./install-f5-logpub.sh 'admin:admin' 10.1.1.4 demotopology 10.1.10.30:1514
     ```
 
         Optional: Create all of the log objects manually:
         The first command below creates the pool. Adjust this to send the IP address of the server running Promtail. The secod command creates a remote high speed log destination that points to this pool. The third command creates an RFC5424 log formatter. The fourth command creates the log publisher; and the fifth command creates a separate log filter to catch and send specific SSL error messages.
         
-        tmsh create ltm pool loki-syslog-pool monitor gateway_icmp members replace-all-with { 172.16.1.89:1514 }
+        tmsh create ltm pool loki-syslog-pool monitor gateway_icmp members replace-all-with { 10.1.10.30:1514 }
         tmsh create sys log-config destination remote-high-speed-log loki-syslog-hsl-dest protocol tcp pool-name loki-syslog-pool
         tmsh create sys log-config destination remote-syslog loki-syslog-dest format rfc5424 remote-high-speed-log loki-syslog-hsl-dest
         tmsh create sys log-config publisher loki-syslog-pub destinations replace-all-with { loki-syslog-dest }
@@ -89,13 +91,22 @@ Loki aggregates logs collected from the Promtail syslog service. To get those lo
         tmsh modify apm log-setting <profile> access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
 
         example:
-        tmsh modify apm log-setting sslo_demoxp3b.app/sslo_demoxp3b-log-setting access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
+        tmsh modify apm log-setting sslo_demotopology.app/sslo_demotopology-log-setting access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
     
-    ***Note***: You'll need to run the **install-f5-logpub** script again for each new topology created to attach the log publisher to the SSLO security policy. 
+    ***Note***: You'll need to run the **install-f5-logpub.sh** script again for each new topology created to attach the log publisher to the SSLO security policy. 
     <br />
 
-1. **Import the Grafana configuration**<br />
-Once all observability services are up and running, you can access the Grafana dashboard at http://server-ip:3000 (where "server-ip" is the IP address of this server). Log into Grafana, navigate to Dashboards, and then Manage. Click the Import button, and then copy the contents of the included config-grafana.json file into the window. Click Import again to complete the import process.
+7. **Import the Grafana configuration**<br />
+Once all observability services are up and running, you can access the Grafana dashboard at http://server-ip:3000 (where "server-ip" is the IP address of this server).
+    <br />
+    a. Navigate to Configuration :: Data sources. Click the "Add data sources" button. Select **Graphite**. In the URL field, enter "http://[observability-server-ip]:88", where observability-server-ip is the IP address of this server (ex. http://10.1.10.30:88). Click the "Save & test" button to complete the data source import.
+    <br />
+
+    b. Navigate to Configuration :: Data sources. Click the "Add data sources" button. Select **Loki**. In the URL field, enter "http://[observability-server-ip]:3100", where observability-server-ip is the IP address of this server (ex. http://10.1.10.30:3100). Click the "Save & test" button to complete the data source import.
+    <br />
+
+    c. Navigate to Dashboards :: Manage. Click the Import button, and then copy the contents of the included config-grafana.json file into the window. Click Import again to complete the import process.
+    <br />
 
 8. **Generate SSL Orchestrator Traffic**<br />
 Generate traffic and observe summary log and metric information pouring into the Grafana dashboard.
