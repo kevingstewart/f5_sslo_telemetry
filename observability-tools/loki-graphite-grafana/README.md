@@ -99,13 +99,13 @@ Loki aggregates logs collected from the Promtail syslog service. To get those lo
 7. **Import the Grafana configuration**<br />
 Once all observability services are up and running, you can access the Grafana dashboard at http://server-ip:3000 (where "server-ip" is the IP address of this server).
     <br />
-    a. Navigate to Configuration :: Data sources. Click the "Add data sources" button. Select **Graphite**. In the URL field, enter "http://[observability-server-ip]:88", where observability-server-ip is the IP address of this server (ex. http://10.1.10.30:88). Click the "Save & test" button to complete the data source import.
+    - Navigate to Configuration :: Data sources. Click the "Add data sources" button. Select **Graphite**. In the URL field, enter "http://[observability-server-ip]:88", where observability-server-ip is the IP address of this server (ex. http://10.1.10.30:88). Click the "Save & test" button to complete the data source import.
     <br />
 
-    b. Navigate to Configuration :: Data sources. Click the "Add data sources" button. Select **Loki**. In the URL field, enter "http://[observability-server-ip]:3100", where observability-server-ip is the IP address of this server (ex. http://10.1.10.30:3100). Click the "Save & test" button to complete the data source import.
+    - Navigate to Configuration :: Data sources. Click the "Add data sources" button. Select **Loki**. In the URL field, enter "http://[observability-server-ip]:3100", where observability-server-ip is the IP address of this server (ex. http://10.1.10.30:3100). Click the "Save & test" button to complete the data source import.
     <br />
 
-    c. Navigate to Dashboards :: Manage. Click the Import button, and then copy the contents of the included config-grafana.json file into the window. Click Import again to complete the import process.
+    - Navigate to Dashboards :: Manage. Click the Import button, and then copy the contents of the included config-grafana.json file into the window. Click Import again to complete the import process.
     <br />
 
 8. **Generate SSL Orchestrator Traffic**<br />
