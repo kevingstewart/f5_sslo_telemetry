@@ -40,30 +40,22 @@ The compose file is configured to read the Loki/Promtail configurations from the
     docker-compose up -d
     ```
 
-    ***Optional**: Create all of the containers individually:*
+        Optional: Create all of the containers individually:
 
-    *A. **Install Loki** (log aggregator)<br />*
-    ```
-    docker run -d --name loki --restart unless-stopped -v $(pwd):/mnt/config -p 3100:3100 grafana/loki:2.3.0 -config.file=/mnt/config/loki-config.yaml
-    ```
+        A. Install Loki** (log aggregator)
+            docker run -d --name loki --restart unless-stopped -v $(pwd):/mnt/config -p 3100:3100 grafana/loki:2.3.0 -config.file=/mnt/config/loki-config.yaml
+        
+        B. Install and configure Promtail (log collector)
+            !! Edit config-promtail.yaml file (included here) to point the client's url (line 9) to the local server IP so that Promtail can access Loki. Promtail will establish a remote Syslog listener on this IP, and TCP port 1514.
+            docker run -d --name promtail --restart unless-stopped -p 1514:1514 -v $(pwd):/mnt/config -v /var/log:/var/log grafana/promtail:2.3.0 -config.file=/mnt/config/config-promtail.yaml
 
-    *B. **Install and configure Promtail** (log collector)<br />
-    Edit config-promtail.yaml file (included here) to point the client's url (line 9) to the local server IP so that Promtail can access Loki. Promtail will establish a remote Syslog listener on this IP, and TCP port 1514.*
-    ```
-    docker run -d --name promtail --restart unless-stopped -p 1514:1514 -v $(pwd):/mnt/config -v /var/log:/var/log grafana/promtail:2.3.0 -config.file=/mnt/config/config-promtail.yaml
-    ```
+        C. Install Graphite (stats collector)
+            docker run -d --name graphite --restart unless-stopped -p 88:80 -p 2003-2004:2003-2004 -p 2023-2024:2023-2024 -p 8125:8125/udp -p 8126:8126 graphiteapp/graphite-statsd
 
-    *C. **Install Graphite** (stats collector)<br />*
-    ```
-    docker run -d --name graphite --restart unless-stopped -p 88:80 -p 2003-2004:2003-2004 -p 2023-2024:2023-2024 -p 8125:8125/udp -p 8126:8126 graphiteapp/graphite-statsd
-    ```
+        D. Install and configure Grafana (dashboard)
+            docker run -d --name grafana --restart unless-stopped -p 3000:3000 grafana/grafana
 
-    *D. **Install and configure Grafana** (dashboard)<br />*
-    ```
-    docker run -d --name grafana --restart unless-stopped -p 3000:3000 grafana/grafana
-    ```
-
-5. **Install and configure F5 Telemetry Streaming** (stats publisher)<br />
+1. **Install and configure F5 Telemetry Streaming** (stats publisher)<br />
 Use the included **install-f5-ts.sh** Bash script to remotely install the latest F5 Telemetry Streaming package. This will download the latest RPM from the Github repository, upload the RPM to the BIG-IP, and then initiate package installation. Edit the script and update the "CREDS" field with the correct BIG-IP user:pass information. Then run the script, providing the IP of the BIG-IP as an argument. Example:
     ```
     chmod +x install-f5-ts.sh
@@ -83,27 +75,26 @@ Loki aggregates logs collected from the Promtail syslog service. To get those lo
     ./install-f5-logpub.sh 172.16.1.83 demotopology
     ```
 
-    ***Optional**: Create all of the log objects manually:<br />*
-    *The first command below creates the pool. Adjust this to send the IP address of the server running Promtail. The secod command creates a remote high speed log destination that points to this pool. The third command creates an RFC5424 log formatter. The fourth command creates the log publisher; and the fifth command creates a separate log filter to catch and send specific SSL error messages.*
-    ```
-    tmsh create ltm pool loki-syslog-pool monitor gateway_icmp members replace-all-with { 172.16.1.89:1514 }
-    tmsh create sys log-config destination remote-high-speed-log loki-syslog-hsl-dest protocol tcp pool-name loki-syslog-pool
-    tmsh create sys log-config destination remote-syslog loki-syslog-dest format rfc5424 remote-high-speed-log loki-syslog-hsl-dest
-    tmsh create sys log-config publisher loki-syslog-pub destinations replace-all-with { loki-syslog-dest }
-    tmsh create sys log-config filter filter-01260009 message-id 01260009 publisher loki-syslog-pub
-    ```
-    *The log publisher must now be attached to an existing SSL Orchestrator security policy. Edit the below to point to the correct named object.*
-    ```
-    tmsh modify apm log-setting <profile> access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
+        Optional: Create all of the log objects manually:
+        The first command below creates the pool. Adjust this to send the IP address of the server running Promtail. The secod command creates a remote high speed log destination that points to this pool. The third command creates an RFC5424 log formatter. The fourth command creates the log publisher; and the fifth command creates a separate log filter to catch and send specific SSL error messages.
+        
+        tmsh create ltm pool loki-syslog-pool monitor gateway_icmp members replace-all-with { 172.16.1.89:1514 }
+        tmsh create sys log-config destination remote-high-speed-log loki-syslog-hsl-dest protocol tcp pool-name loki-syslog-pool
+        tmsh create sys log-config destination remote-syslog loki-syslog-dest format rfc5424 remote-high-speed-log loki-syslog-hsl-dest
+        tmsh create sys log-config publisher loki-syslog-pub destinations replace-all-with { loki-syslog-dest }
+        tmsh create sys log-config filter filter-01260009 message-id 01260009 publisher loki-syslog-pub
+        
+        The log publisher must now be attached to an existing SSL Orchestrator security policy. Edit the below to point to the correct named object.
+        
+        tmsh modify apm log-setting <profile> access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
 
-    example:
-    tmsh modify apm log-setting sslo_demoxp3b.app/sslo_demoxp3b-log-setting access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
-    ```
+        example:
+        tmsh modify apm log-setting sslo_demoxp3b.app/sslo_demoxp3b-log-setting access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
     
     ***Note***: You'll need to run the **install-f5-logpub** script again for each new topology created to attach the log publisher to the SSLO security policy. 
     <br />
 
-7. **Import the Grafana configuration**<br />
+1. **Import the Grafana configuration**<br />
 Once all observability services are up and running, you can access the Grafana dashboard at http://server-ip:3000 (where "server-ip" is the IP address of this server). Log into Grafana, navigate to Dashboards, and then Manage. Click the Import button, and then copy the contents of the included config-grafana.json file into the window. Click Import again to complete the import process.
 
 8. **Generate SSL Orchestrator Traffic**<br />
