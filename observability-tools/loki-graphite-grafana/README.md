@@ -106,7 +106,6 @@ Once all observability services are up and running, you can access the Grafana d
     <br />
 
     - Navigate to Dashboards :: Manage. Click the Import button, and then copy the contents of the included config-grafana.json file into the window. Click Import again to complete the import process.
-    <br />
 
 8. **Generate SSL Orchestrator Traffic**<br />
 Generate traffic and observe summary log and metric information pouring into the Grafana dashboard.
