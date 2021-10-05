@@ -195,14 +195,14 @@
           {
             "refCount": 0,
             "refId": "A",
-            "target": "aliasSub(stats.gauges.f5telemetry.$Host.systemPerf.sys-performance-all-stats-Client_Connections.Current, '.*sys-performance-all-stats-(.*)\\..*', '\\1')",
+            "target": "aliasSub(stats.gauges.f5telemetry.$Host.connections.sys-performance-connections-Client_Connections.Current, '.*sys-performance-connections-(.*)\\..*', '\\1')",
             "textEditor": true
           },
           {
             "hide": false,
             "refCount": 0,
             "refId": "B",
-            "target": "aliasSub(stats.gauges.f5telemetry.$Host.systemPerf.sys-performance-all-stats-SSL_TPS.Current, '.*sys-performance-all-stats-(.*)\\..*', '\\1')",
+            "target": "aliasSub(stats.gauges.f5telemetry.$Host.throughput.sys-performance-throughput-SSL_TPS.Current, '.*sys-performance-throughput-(.*)\\..*', '\\1')",
             "textEditor": true
           }
         ],
@@ -282,21 +282,21 @@
           {
             "refCount": 0,
             "refId": "A",
-            "target": "aliasSub(stats.gauges.f5telemetry.$Host.systemPerf.sys-performance-all-stats-Utilization.Current, '.*sys-performance-all-stats-(.*)\\..*', '\\1')",
+            "target": "aliasSub(stats.gauges.f5telemetry.$Host.systemPerf.sys-performance-system-Utilization.Current, '.*sys-performance-system-(.*)\\..*', '\\1')",
             "textEditor": true
           },
           {
             "hide": false,
             "refCount": 0,
             "refId": "B",
-            "target": "aliasSub(stats.gauges.f5telemetry.$Host.systemPerf.sys-performance-all-stats-TMM_Memory_Used.Current, '.*sys-performance-all-stats-(.*)\\..*', '\\1')",
+            "target": "aliasSub(stats.gauges.f5telemetry.$Host.systemPerf.sys-performance-system-TMM_Memory_Used.Current, '.*sys-performance-system-(.*)\\..*', '\\1')",
             "textEditor": true
           },
           {
             "hide": false,
             "refCount": 0,
             "refId": "C",
-            "target": "aliasSub(stats.gauges.f5telemetry.$Host.systemPerf.sys-performance-all-stats-Other_Memory_Used.Current, '.*sys-performance-all-stats-(.*)\\..*', '\\1')",
+            "target": "aliasSub(stats.gauges.f5telemetry.$Host.systemPerf.sys-performance-system-Other_Memory_Used.Current, '.*sys-performance-system-(.*)\\..*', '\\1')",
             "textEditor": true
           }
         ],

@@ -9,7 +9,15 @@
             },
             "systemPerf": {
                 "name": "systemPerf",
-                "path": "/mgmt/tm/sys/performance/all-stats?options=detail"
+                "path": "/mgmt/tm/sys/performance/system"
+            },
+            "connections": {
+                "name": "connections",
+                "path": "/mgmt/tm/sys/performance/connections"
+            },
+            "throughput": {
+                "name": "throughput",
+                "path": "/mgmt/tm/sys/performance/throughput"
             }
         }
     },
