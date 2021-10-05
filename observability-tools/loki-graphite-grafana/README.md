@@ -93,11 +93,11 @@ Loki aggregates logs collected from the Promtail syslog service. To get those lo
         example:
         tmsh modify apm log-setting sslo_demotopology.app/sslo_demotopology-log-setting access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
     
-    ***Note***: You'll need to run the **install-f5-logpub.sh** script again for each new topology created to attach the log publisher to the SSLO security policy. 
+    ***Note***: You'll need to run the **install-f5-logpub.sh** script again for each new topology created to attach the log publisher to the SSLO security policy.
     <br />
 
 7. **Import the Grafana configuration**<br />
-Once all observability services are up and running, you can access the Grafana dashboard at http://server-ip:3000 (where "server-ip" is the IP address of this server).
+Once all observability services are up and running, you can access the Grafana dashboard at http://server-ip:3000 (where "server-ip" is the IP address of this server). Initial login is 'admin:admin'.
     <br />
     - Navigate to Configuration :: Data sources. Click the "Add data sources" button. Select **Graphite**. In the URL field, enter "http://[observability-server-ip]:88", where observability-server-ip is the IP address of this server (ex. http://10.1.10.30:88). Click the "Save & test" button to complete the data source import.
     <br />
