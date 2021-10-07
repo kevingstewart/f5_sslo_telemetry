@@ -34,7 +34,10 @@ Clone this repository to your observability server.
     ```
 
 3. **Edit the config-promtail.yaml file**<br />
-Edit the file to point the client's url (line 9) to the local server IP so that Promtail can access Loki. Promtail will establish a remote Syslog listener on this IP, and TCP port 1514. Ensure that this IP address will be accessible to the BIG-IP over a data plane interface.
+Edit the file to point the client's url (line 9) to the local server IP so that Promtail can access Loki. Promtail will establish a remote Syslog listener on this IP, and TCP port 1514. Ensure that this IP address will be accessible to the BIG-IP over a data plane interface. Example:
+
+        clients:
+        - url: http://10.1.10.30:3100/loki/api/v1/push
 
 4. **Install the services via Docker-Compose**<br />
 The compose file is configured to read the Loki/Promtail configurations from the current directory. To start all of the services:
