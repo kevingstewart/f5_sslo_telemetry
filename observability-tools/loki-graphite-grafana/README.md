@@ -77,7 +77,7 @@ Loki aggregates logs collected from the Promtail syslog service. To get those lo
     ./install-f5-logpub.sh 'admin:admin' 10.1.1.4 10.1.10.30:1514
     ```
         
-    The script creates all of the required objects to push SSLO summary logs to an external Syslog. This includes the Syslog pool, log filter/destination/publisher, and a new SSLO-type per-session profile that attaches this log publisher. The SSLO workflow has no consistent way to attach a new log publisher to the SSLO profile. The script therefore creates a new SSLO-type per-session profile that can be used in topology workflows. 
+    The script creates all of the required objects to push SSLO summary logs to an external Syslog. This includes the Syslog pool, log filter/destination/publisher, and a new SSLO-type per-session profile that attaches this log publisher. The SSLO workflow has no consistent way to attach a new log publisher to the SSLO profile. The script therefore creates a new SSLO-type per-session profile that can be used in topology workflows. This new profile is functionally identical to the non-editable per-session profile created in the workflow, except that it defines the new log publisher.
 
     - In an L2 or L3 outbound SSLO topology workflow, on the Interception Rules page, under "Access Profile", select the new SSLO logging profile.
     - In an L3 explicit proxy SSLO topology workflow, complete and deploy the topology, then edit the corresponding "-in-t" object on the Interception Rules page. Under "Access Profile", select the new SSLO logging profile.
