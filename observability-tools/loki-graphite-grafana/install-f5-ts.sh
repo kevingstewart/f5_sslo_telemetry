@@ -1,4 +1,12 @@
 #!/bin/bash
+## F5 Telemetry Streaming Package Installer
+## Author: Kevin Stewart, Sr. SA F5 Networks
+## Revision: 1.0
+## Description: pushes the latest version of the F5 TS package to the target BIG-IP
+##
+## Command line: requires the following:
+##  CREDS: the BIG-IP username:password required to perform these administrative operations, enclosed in single quotes. Example: 'admin:admin'
+##  BIGIP: the IP address of the target BIG-IP. Example: 10.1.1.4
 
 CREDS=$1
 BIGIP=$2

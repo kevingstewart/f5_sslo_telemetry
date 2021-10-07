@@ -71,32 +71,24 @@ Use the included **install-f5-ts.sh** Bash script to remotely install the latest
     ```
 
 6. **Install and configure an F5 log publisher** (log publisher)<br />
-Loki aggregates logs collected from the Promtail syslog service. To get those logs to Promtail, the BIG-IP must be configured with a log publisher that attaches to the SSL Orchestrator security policy. Use the included **install-f5-logpub.sh** script to create all of the requires logging objects on the target BIG-IP. Run the script, providing the BIG-IP credentials, IP of the BIG-IP, SSLO topology (short) name, and observability server's Syslog listener IP:port as arguments. Example:
+Loki aggregates logs collected from the Promtail syslog service. To get those logs to Promtail, the BIG-IP must be configured with a log publisher that attaches to the SSL Orchestrator security policy. Use the included **install-f5-logpub.sh** script to create all of the requires logging objects on the target BIG-IP. Run the script, providing the BIG-IP credentials, IP of the BIG-IP, and observability server's Syslog listener IP:port as arguments. Example:
     ```
     chmod +x install-f5-logpub.sh
-    ./install-f5-logpub.sh 'admin:admin' 10.1.1.4 demotopology 10.1.10.30:1514
+    ./install-f5-logpub.sh 'admin:admin' 10.1.1.4 10.1.10.30:1514
     ```
+        
+    The script creates all of the required objects to push SSLO summary logs to an external Syslog. This includes the Syslog pool, log filter/destination/publisher, and a new SSLO-type per-session profile that attaches this log publisher. The SSLO workflow has no consistent way to attach a new log publisher to the SSLO profile. The script therefore creates a new SSLO-type per-session profile that can be used in topology workflows. 
 
-        Optional: Create all of the log objects manually:
-        The first command below creates the pool. Adjust this to send the IP address of the server running Promtail. The secod command creates a remote high speed log destination that points to this pool. The third command creates an RFC5424 log formatter. The fourth command creates the log publisher; and the fifth command creates a separate log filter to catch and send specific SSL error messages.
+    - In an L2 or L3 outbound SSLO topology workflow, on the Interception Rules page, under "Access Profile", select the new SSLO logging profile.
+    <br />
+    - In an L3 explicit proxy SSLO topology workflow, complete and deploy the topology, then edit the corresponding "-in-t" object on the Interception Rules page. Under "Access Profile", select the new SSLO logging profile.
+    <br />
+    - In L2 or L3 inbound SSLO topology workflow, on the Interception Rules page, under "Access Profile", select the new SSLO logging profile.
         
-        tmsh create ltm pool loki-syslog-pool monitor gateway_icmp members replace-all-with { 10.1.10.30:1514 }
-        tmsh create sys log-config destination remote-high-speed-log loki-syslog-hsl-dest protocol tcp pool-name loki-syslog-pool
-        tmsh create sys log-config destination remote-syslog loki-syslog-dest format rfc5424 remote-high-speed-log loki-syslog-hsl-dest
-        tmsh create sys log-config publisher loki-syslog-pub destinations replace-all-with { loki-syslog-dest }
-        tmsh create sys log-config filter filter-01260009 message-id 01260009 publisher loki-syslog-pub
-        
-        The log publisher must now be attached to an existing SSL Orchestrator security policy. Edit the below to point to the correct named object.
-        
-        tmsh modify apm log-setting <profile> access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
 
-        example:
-        tmsh modify apm log-setting sslo_demotopology.app/sslo_demotopology-log-setting access replace-all-with { general-log { log-level { access-control err access-per-request err ssl-orchestrator info } publisher loki-syslog-pub type ssl-orchestrator } }
-    
-    ***Note***: You'll need to run the **install-f5-logpub.sh** script again for each new topology created to attach the log publisher to the SSLO security policy.
     <br />
 
-7. **Import the Grafana configuration**<br />
+1. **Import the Grafana configuration**<br />
 Once all observability services are up and running, you can access the Grafana dashboard at http://server-ip:3000 (where "server-ip" is the IP address of this server). Initial login is 'admin:admin'.
     <br />
     - Navigate to Configuration :: Data sources. Click the "Add data sources" button. Select **Graphite**. In the URL field, enter "http://[observability-server-ip]:88", where observability-server-ip is the IP address of this server (ex. http://10.1.10.30:88). Click the "Save & test" button to complete the data source import.
