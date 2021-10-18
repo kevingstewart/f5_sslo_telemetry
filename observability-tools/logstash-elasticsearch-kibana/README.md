@@ -7,12 +7,12 @@ All together, the following instructions define a minimum configuration for pres
 
 Example:
 
-<img src="../../images/loki-graphite-grafana-sample.png" width="300">
+[IMAGE STUB]
 
 
 ### Installation
 While not expressly required, the steps to building an Elk Stack in Docker containers is shown below. This is an easy way to get an observability system up and runninq quickly. The entire set of tools can also be created from a single docker-compose file (included here). For this observability server, you'll minimally need a Linux platform with Docker installed (and optionally Docker-Compose).<br />
-<img src="../../images/loki-graphite-grafana-layout.png" width="500"><br />
+[IMAGE STUB]<br />
 Naturally in a production system these components can be spread across multiple machines, however the details of that architecture are beyond the scope of this project. Please consult official product documentation as required. The below is for demonstration purposes only and relies on a single *observability* server to provide all log/stat collection, log aggregation, and dashboard tools - running in Docker containers.
 
 1. **Create an observability server**<br />
@@ -70,10 +70,3 @@ Once all observability services are up and running, you can access the Kibana da
 7. **Generate SSL Orchestrator Traffic**<br />
 Generate traffic and observe summary log and metric information pouring into the Kibana dashboard.
 
-
-
-
-1. **Exploration**<br />
-One of the most useful functions of this Loki/Grafana integration is the powerful way in which the logs can be explored. This is especially powerful in troubleshooting user connectivity issues. Please review the sample dashboard above. While the bulk of the page is dedicated to aggregated stats/metrics, the bottom panel includes a log viewer. Click on the "Summary Log" title and click **Explore** from the fly-out menu.<br /><br />
-<img src="../../images/loki-graphite-grafana-sample-1.png" width="800"><br /><br />
-You can then manually update the log query in the "Log browser" field to filter the displayed logs. Or, click on the "**>**" icon next to a log line to expand its contents. Within that you'll see the individual labelled elements. To include one of these labels in the search, click the "plus-magnifying-glass" icon next to a label. This will add the label to the query and reduce the set of logs down to those that match this criteria. You could, for example, filter the logs down to all matching a specific source_ip label, or any combinations of label matches. 
