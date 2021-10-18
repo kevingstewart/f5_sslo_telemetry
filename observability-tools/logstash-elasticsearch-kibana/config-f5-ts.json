@@ -1,0 +1,58 @@
+{
+    "class": "Telemetry",
+    "Endpoints_Custom": {
+        "class": "Telemetry_Endpoints",
+        "items": {
+            "systemHostname": {
+                "name": "system",
+                "path": "/mgmt/tm/sys/global-settings?$select=hostname"
+            },
+            "systemPerf": {
+                "name": "systemPerf",
+                "path": "/mgmt/tm/sys/performance/system"
+            },
+            "connections": {
+                "name": "connections",
+                "path": "/mgmt/tm/sys/performance/connections"
+            },
+            "throughput": {
+                "name": "throughput",
+                "path": "/mgmt/tm/sys/performance/throughput"
+            }
+        }
+    },
+    "My_System": {
+        "class": "Telemetry_System",
+        "allowSelfSignedCert": true,
+        "systemPoller": [
+            "My_Push_Poller",
+            {
+                "interval": 60
+            }
+        ],
+        "trace": true
+    },
+    "My_Push_Poller": {
+        "class": "Telemetry_System_Poller",
+        "interval": 60,
+        "endpointList": "Endpoints_Custom",
+        "trace": true
+    },
+    "ElasticsearchConsumer": {
+        "class": "Telemetry_Consumer",
+        "type": "Generic_HTTP",
+        "host":"172.16.1.89",
+        "allowSelfSignedCert": true,
+        "protocol": "http",
+        "path": "/",
+        "port": 8080,
+        "method": "POST",
+        "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+        ],
+        "trace": true
+    }
+}
