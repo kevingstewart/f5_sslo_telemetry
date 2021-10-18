@@ -8,8 +8,6 @@ services:
       - ./elasticsearch-storage:/usr/share/elasticsearch/data
     environment:
       - discovery.type=single-node
-    ports:
-      - 9200:9200
 
   logstash:
     container_name: logstash
@@ -19,6 +17,7 @@ services:
       - ./config-logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     ports:
       - 10514:10514
+      - 8080:8080
     links:
       - elasticsearch:elasticsearch
 
