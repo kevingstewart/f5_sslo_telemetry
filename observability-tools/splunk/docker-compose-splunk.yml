@@ -18,7 +18,7 @@ services:
       default: {}
     volumes:
       - "./certs/splunk.crt:/home/splunk.crt"
-      - "./certs/splunk.key:/home/splunk.key"
+      - "./certs/splunk.pemk:/home/splunk.key"
     ports:
       - 9000:8000
       - 9088:8088
