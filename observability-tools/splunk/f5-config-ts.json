@@ -1,0 +1,24 @@
+{
+    "class": "Telemetry",
+    "My_System": {
+        "class": "Telemetry_System",
+        "systemPoller": {
+            "interval": 60
+        }
+    },
+    "My_Listener": {
+        "class": "Telemetry_Listener",
+        "port": 6514
+    },
+     "My_Splunk_Consumer": {
+     "class": "Telemetry_Consumer",
+     "type": "Splunk",
+     "host": "SPLUNK_LISTENER_IP",
+     "protocol": "https",
+     "port": "9088",
+     "allowSelfSignedCert": true,
+     "passphrase": {
+         "cipherText": "SPLUNK_TOKEN"
+    }
+  }
+}
