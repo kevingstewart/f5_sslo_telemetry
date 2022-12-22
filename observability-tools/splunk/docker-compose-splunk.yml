@@ -1,0 +1,29 @@
+version: '3.3'
+services:
+
+  # splunk
+  splunk:
+    container_name: splunk
+    image: splunk/splunk:latest
+    environment:
+      SPLUNK_HTTP_ENABLESSL: 'true'
+      SPLUNK_HTTP_ENABLESSL_CERT: '/home/splunk.crt'
+      SPLUNK_HTTP_ENABLESSL_PRIVKEY: '/home/splunk.key'
+      SPLUNK_HTTP_ENABLESSL_PRIVKEY_PASSWORD: 'password'
+      SPLUNK_START_ARGS: '--accept-license'
+      SPLUNK_USER: 'root'
+      SPLUNK_PASSWORD: 'P@ssword!'
+      SPLUNK_LICENSE_URI: 'Free'
+    networks:
+      default: {}
+    volumes:
+      - "./certs/splunk.crt:/home/splunk.crt"
+      - "./certs/splunk.key:/home/splunk.key"
+    ports:
+      - 9000:8000
+      - 9088:8088
+    restart: unless-stopped
+
+networks:
+  default:
+    driver: bridge
