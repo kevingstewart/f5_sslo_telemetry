@@ -5,6 +5,17 @@ This guide specifically addresses SSL Orchestrator **forensic** logging - the pe
 
 ### Splunk Installation
 
+For the purpose of testing, you can deploy a free version of Splunk in a Docker container. A docker-compose file and requisite test certs have been provided here to build this container. This will build a container that exposes ports 9000 and 9088 to the host, mapped from the internal 8000 and 8088 ports, respectively. 
+
+    ```
+    docker-compose -f docker-compose-splunk.yml
+    ```
+It will take a little time for the Splunk services to stabilize. You can monitor with ```docker logs -f splunk```. Once up and running, log into the web UI on port 9000. The 9088 port is for the event listener, configured in the F5 Telemetry Streaming JSON.
+
+______________________
+
+### Splunk Configuration
+
 1. **Create a new index**<br />
 
     - Settings -> Indexes [Create New Index]
@@ -52,7 +63,7 @@ ______________________
     - SPLUNK_LISTENER_IP: the IP address of the Splunk listener
     - SPLUNK_TOKEN: the TOKEN generated from the Splunk HTTP Event Collector creation
 
-   ***Note: if Splunk is running as a container, also change the "port" value to the host-side port specified in the docker config. The native Plunk listener port is typically 8088.***
+   ***Note: if Splunk is running as a container, also change the "port" value to the host-side port specified in the docker config (ex. 9088). The native Plunk listener port is typically 8088.***
    
 3. **POST the Telemetry Streaming Config File to the BIG-IP**<br />
    This will push the JSON configuration to the running Telemetry Streaming process on the BIG-IP. Run the "f5-install-ts-config.sh" script and provide the BIG-IP admin credentials and IP address:
