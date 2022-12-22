@@ -1,7 +1,8 @@
 # SSL Orchestrator Telemetry Project
 ## Tools: Splunk
 
-This guide specifically addresses SSL Orchestrator **forensic** logging - the per-flow records an admin can use to diagnose user traffic issues (date-time, src, dst, proto, tls, policy, services, errors, etc.).
+This guide specifically addresses SSL Orchestrator **forensic** logging - the per-flow records an admin can use to diagnose user traffic issues (date-time, src, dst, proto, tls, policy, services, errors, etc.). Provided below are steps to create a Docker container instance of a single-instance Splunk service, Splunk configuration, F5 Telemetry Streaming installation and configuration, and SSL Orchestrator configuration. This project allows Splunk to capture SSL Orchestrator flow summary logging for forensic analysis.
+
 
 ### Splunk Installation
 
